@@ -1,7 +1,7 @@
 ﻿using System;
 using Formacion.CSharp.Objects; //Indicar el espacio de nombres donde se encuentre la clase del objeto. 
 
-namespace Formacion.CSharp.ConsoleApp2
+namespace Formacion.CSharp.ConsoleApp1
 {
     class Program
     {
@@ -48,6 +48,29 @@ namespace Formacion.CSharp.ConsoleApp2
             b = (byte)c; //para meter c dentro de b -> Si c no es mayor a 255 (límite de representación del byte).
             b = Convert.ToByte(c); //DA ERROR si se supera el límite de representación del byte (u otro).
             byte.TryParse(d, out b); //Convertir de texto a byte.
+
+
+            //ARRAYS:
+            //int numero = 10; //Almacenar un número.
+            int[] numeros1 = { 10, 13, 6, 30, 40 }; //Definir e inicializar la array.
+            int[] numeros2 = new int[10]; //Definir un array e inicializarla. Entre Corchetes el número de elementos. Valores por defecto -> 0.
+
+            numeros1[2] = 500; //Para modificar el valor de una posición.
+            Console.WriteLine(numeros1[2]); //Acceso a los elementos del array.
+
+            Alumno[] alumnos1 = new Alumno[11]; //Valor por defecto Null.
+            Alumno[] alumnos2 = { new Alumno(), new Alumno (), new Alumno()}; //Array de objetos -> En cada una de las posiciones nuevas instancias del objeto.
+
+            alumnos2[3].Apellidos = "Cerdán"; //Para modificar las propiedad/variables del objeto en la posición [x].
+            Console.WriteLine(alumnos2[3].Apellidos); //Acceso a las propiedades/variables del elemento [x] del array.
+
+            //CUANDO CREAMOS UN OBJETO TENEMOS LA POSIBILIDAD DE ASIGNAR VALORES A LAS DIFERENTES PROPIEDADES O VARIABLES PÚBLICAS:
+            Alumno alumno10 = new Alumno()
+            {
+                Apellidos = "Berta" //, para añadir más variables a modificar
+            };
+
+            Console.ReadKey(); //Para que se quede parado esperando que pulsemos una tecla
         }
     }
 }
