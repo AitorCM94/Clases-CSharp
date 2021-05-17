@@ -9,13 +9,25 @@ namespace Formacion.CSharp.ConsoleApp1
         {
             //Recorrer array con un while y do while.
             string[] fruta2 = {"naranja", "limón", "pomelo", "lima", "fresa", "sandía", "melón" };
+
+            //While 1:
             int posicion = 0;
             while (posicion < fruta2.Length)
             {
-                Console.WriteLine(fruta2[posicion]);
+                Console.WriteLine(fruta2[posicion]); //El numero posicion lo pasamos a la posición de fruta2 entre [].
                 posicion += 1;
             }
             int posicion2 = 0;
+            //While 2:
+            posicion = 0;
+            while(true)
+            {
+                Console.WriteLine(fruta2[posicion]);
+                posicion += 1;
+                if (posicion == fruta2.Length)
+                    break;
+            }
+            //Do {} while:
             do
             {
                 Console.WriteLine(fruta2[posicion2]);
@@ -24,20 +36,42 @@ namespace Formacion.CSharp.ConsoleApp1
 
 
             Console.ReadKey();
-            //Preguntamos un número
+
+            //EJERCICIOS FOR:
+
+            //Método de conversión CONVERT:
             Console.Write("Número: ");
-            string input = Console.ReadLine();
-            int numero = Convert.ToInt32(input);
+            int num1 = Convert.ToInt32(Console.ReadLine()); //Preguntamos y convertimos en la misma línea.
 
-            for (int i = 1; i < 11; i++)
-                Console.WriteLine(i * numero);
+            //Método de conversión TRYPARSE 1:
+            Console.Write("Número: ");
+            int num2 = 0;
+            int.TryParse(Console.ReadLine(), out num2);
+
+            //Método de conversión TRYPARSE 2:
+            Console.Write("Número: ");
+            var num3 = int.TryParse(Console.ReadLine(), out _); //Tienes que utilizar el var.
+
+            //Método de conversión TRYPARSE 3:
+            Console.WriteLine("Númer: ");
+            int.TryParse(Console.ReadLine(), out int num4);
+
+            //Método de conversión PARSE:
+            int num5 = int.Parse(Console.ReadLine());
+
+            //Tabla de multiplicar:
+            for (int i = 1; i < 11; i++) 
+                Console.WriteLine(i * num1);
+
+            int[] tabla = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; //Creamos un array.
+            foreach (var n in tabla)
+                Console.WriteLine(n * num2);
 
 
-            //Pintamos la tabla de multiplicar
+            Console.ReadKey();
 
-
-            
             decimal[] numeros3 = { 10, 5, 345, 55, 13, 1000, 83 };
+            
             //Suma total
             decimal total = 0;
             for (int i = 0; i < numeros3.Length; i++)
@@ -54,16 +88,19 @@ namespace Formacion.CSharp.ConsoleApp1
             decimal media = total / numeros3.Length;
             int media2 = total2 / numeros3.Length;
 
-            //Max y min
+            //Pintar el valor más grande y más pequeño de una array:
             decimal max = 0;
-            decimal min = numeros3[0];
+            decimal min = numeros3[0]; //Parto de la posición 0.
             for (int i = 0; i < numeros3.Length; i++)
             {
-                if (numeros3[i] > max) max = numeros3[i];
-                if (numeros3[i] < min) min = numeros3[i];
+                if (numeros3[i] > max) max = numeros3[i]; //Si el valor es mayor que el valor contenido en max, este pasa a max.
+                if (numeros3[i] < min) min = numeros3[i]; //Si el valor es menor que el valor contenido en min, este pasa a min.
             }
 
-            
+
+            Console.ReadKey();
+
+            //EJERCCIO RESERVAS:
             Reserva reserva = new Reserva();
 
             Console.Write("ID de la Reserva: ");
@@ -204,22 +241,22 @@ namespace Formacion.CSharp.Objects
         string Nombre = "Aitor"; //Creación de variables que contienen alfanumericos.
         public string Apellidos = "Cerdán"; //Hacemos la variable pública
         int Edad = 26; //Creación de variables que contienen numéricos.
+
+        /// <summary>
+        /// [tipo] [nombre] ([parámetros])
+        /// </summary>
+        public void Pintar() //MÉTODO
+        {
+            var a = 10;
+        }
     }
 
     public class Reserva
-
     {
-
         public string id;
-
         public string cliente;
-
-
-
         // 100: Habitación Individual  200: Habitación Doble  300: Junior Suite  400: Suite
-
         public int tipo;
-
         public bool fumador;
 
     }
