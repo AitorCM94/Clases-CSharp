@@ -1,15 +1,8 @@
-﻿@*Especificar elt TIPO del MODELO DE DATOS -> En este caso un entero:*@
-@model int
-
-
-@{
-    //int numero = 15;
-}
-
-<br /> @*RECIBIR INFORMACIÓN*@
-<h1><b>@ViewBag.mensaje</b></h1> @*Método ViewBag*@
-<hr />
-@for (var i = 0; i < 11; i++)
-{
-    <h4>@i x @Model = @(i * Model)  </h4> @*Variable especial MODEL (donde tenemos la información) -> Método Modelo de datos*@
-}
+﻿<br />
+<br />
+<div class="jumbotron">
+    <h1 class="display-4">Bienvenido a NorthWind</h1>
+    <p class="lead">Aplicación de Gestión de Northwind Inc.</p>
+    <hr class="my-4">
+    <img class="img-thumbnail" class="text-center" src="https://www.logomyway.com/logos_new/4899/Global.jpg" />
+</div>

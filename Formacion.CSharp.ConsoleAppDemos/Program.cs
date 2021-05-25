@@ -9,7 +9,7 @@ namespace Formacion.CSharp.ConsoleAppDemos
     {
         static void Main(string[] args)
         {
-            metodos();
+            ejercicios2();
         }
 
         static void expresiones()
@@ -46,6 +46,14 @@ namespace Formacion.CSharp.ConsoleAppDemos
             {
                 Console.WriteLine($"{item.Descripcion} -> {item.Precio} euros.");
             }
+            Console.WriteLine(Environment.NewLine); //SIN ESTO NO PINTA EL SIGUIENTE!!!
+
+            //4. Buscar por carácteres:
+            var products = from r in DataLists.ListaProductos where r.Descripcion == "Cuaderno" select r;
+            foreach (var item in products)
+            {
+                Console.WriteLine($"{item.Id}# {item.Descripcion} -> {item.Precio} euros.");
+            }
         }
 
         static void metodos()
@@ -73,22 +81,43 @@ namespace Formacion.CSharp.ConsoleAppDemos
             {
                 Console.WriteLine($"{item.Descripcion} -> {item.Precio} euros.");
             }
+            Console.WriteLine(Environment.NewLine);
+
+            //4. Buscar por carácteres:
+            var productos = DataLists.ListaProductos
+                .Where(r => r.Descripcion
+                .StartsWith("Cuaderno")) //Que comience por. Sensible a mayúsculas y minúsculas.
+                .ToList();
+            foreach (var item in productos)
+            {
+                Console.WriteLine($"{item.Id}# {item.Descripcion} -> {item.Precio} euros.");
+            }
         }
 
-        static void ejercicios()
+        static void ejercicios1()
         {
-            //Lista completa de CLientes:
-            var clientes1 = DataLists.ListaClientes.ToList();
-            //Id igual a 2:
-            var clientes2 = DataLists.ListaClientes.Where(x => x.Id == 2).ToList();
-            //Nacidos entre 1980 y 1990:
-            var clientes = from cliente in DataLists.ListaClientes where cliente.FechaNac.Year >= 1980 && cliente.FechaNac.Year <= 1990 select cliente;
+            //1. Lista completa de CLientes:
+            var clientes1 = DataLists.ListaClientes.ToList(); //Retorna una lista que podemos recorrer con el foreach.
 
+            var clients1 = from c in DataLists.ListaClientes select c; //Retorna una lista que podemos recorrer con el foreach.
 
-            //Ejercicio Aitor -> Producto con el precio más alto!
-            var productos = from producto in DataLists.ListaProductos select producto;
+            //2. Id igual a 2 (solo existe uno):
+            var clientes2 = DataLists.ListaClientes.Where(x => x.Id == 2).FirstOrDefault(); //FirstOrDefault retorna un único elemento.
+            Console.WriteLine("Id:{0} -> {1} {2}", clientes2.Id, clientes2.Nombre, clientes2.FechaNac.ToShortDateString()); //Un único elemento.
+
+            var clients2 = from c in DataLists.ListaClientes where c.Id == 2 select c;
+
+            //3. Nacidos entre 1980 y 1990:
+            var clientes3 = DataLists.ListaClientes.Count(x => x.FechaNac.Year >= 1980 && x.FechaNac.Year <= 1990); //Usando Count en lugar de Where.
+            Console.WriteLine($"Nacidos en los ochenta: {clientes3} clientes"); //Obtenemos el número.
+
+            var clients3 = (from cliente in DataLists.ListaClientes where cliente.FechaNac.Year >= 1980 && cliente.FechaNac.Year <= 1990 select cliente).Count();
+
+            //4. EJERCICIO BUSCAR EL PRECIO MÁS ALTO:
+            //4.1 Ejercicio Aitor:
+            var productos1 = from producto in DataLists.ListaProductos select producto;
             float proMax = 0;
-            foreach (var p in productos)
+            foreach (var p in productos1)
             {
                 if (p.Precio > proMax)
                 {
@@ -98,7 +127,134 @@ namespace Formacion.CSharp.ConsoleAppDemos
             var producto1 = from producto in DataLists.ListaProductos where producto.Precio == proMax select producto;
             foreach (var item in producto1)
             {
-                Console.WriteLine($"{item.Descripcion} -> {item.Precio} euros.");
+                Console.WriteLine($"Mayor precio: {item.Descripcion} -> {item.Precio} euros.");
+            }
+            //4.2 MÉTODO Ordenación:
+            var productos2 = DataLists.ListaProductos
+                .OrderByDescending(r => r.Precio) //Ordenamos por precio de mayor a menor.
+                .FirstOrDefault(); //Retornamos el primero.
+            Console.WriteLine($"Mayor precio: {productos2.Descripcion} -> {productos2.Precio} euros.");
+            //4.3 MÉTODO Max:
+            var precioMax = DataLists.ListaProductos
+                .Select(r => r.Precio)
+                .Max(); //Podemos poner el filtro directamente en el método Max.
+            var producto3 = DataLists.ListaProductos
+                .Where(r => r.Precio == precioMax)
+                .FirstOrDefault();
+            Console.WriteLine($"Mayor precio: {producto3.Descripcion} -> {producto3.Precio} euros.");
+            //4.3.1 Haciendo una SubConsulta:
+            var producto4 = DataLists.ListaProductos
+                .Where(r => r.Precio == DataLists.ListaProductos.Select(r => r.Precio).Max())
+                .FirstOrDefault();
+            Console.WriteLine($"Mayor precio: {producto4.Descripcion} -> {producto4.Precio} euros.");
+
+            //4.4 EXPRESIÓN
+            var producto5 = from producto in DataLists.ListaProductos 
+                            where producto.Precio == (from r in DataLists.ListaProductos select r.Precio).Max() 
+                            select producto; //Devuelve una lista si no añadimos al final (...).FirstOfDefault()
+            foreach (var item in producto5)
+            {
+                Console.WriteLine($"Mayor precio: {item.Descripcion} -> {item.Precio} euros.");
+            }
+        }
+
+        static void agrupaciones()
+        {
+            //PEDIDOS AGRUPADOS POR IDCLIENTE:
+            //0. Sin .GroupBy (2 consultas):
+            foreach (var c in DataLists.ListaClientes.ToList()) //Buscar todos los clientes.
+            {
+                int numPedidos = DataLists.ListaPedidos.Where(r => r.IdCliente == c.Id).Count(); //Por cada IdCliente buscar el número de Id (pedidos).
+                Console.WriteLine($"{c.Nombre} - {numPedidos} pedidos.");
+            }
+            Console.WriteLine(Environment.NewLine);
+
+            //1. CON GROUP BY:
+            //Consulta:
+            var listIdClientes = DataLists.ListaPedidos
+                .GroupBy(r => r.IdCliente) //Se genera la key (propiedad por la que agrupas).
+                .ToList(); //Retorna una colección de keys -> los IdClientes que son iguales agrupados en cada posición.
+            //Pintamos:
+            foreach (var valorDis in listIdClientes) //Recorremos la lista de Keys.
+            {
+                Console.WriteLine($"Clave (IdCliente): {valorDis.Key}");
+                foreach (var pedido in valorDis) //Recorremos cada key para acceder a los objetos pedido y sus propiedades.
+                {
+                    Console.WriteLine($" -> {pedido.Id} {pedido.FechaPedido.ToShortDateString()}"); //Accedemos a las propiedades de cada objeto pedido.
+                }
+                Console.WriteLine("");
+            }
+
+            //2. GROUP BY + SELECT:
+            var listGroupP = DataLists.ListaPedidos
+                .GroupBy(r => r.IdCliente) //Agrupamos por IdCliente.
+                .Select(r => new { //Objeto anónimo -> podemos ir añadiendo los valores que necesitamos (des de la DB):
+                    pedidos = r, //Listado de KEYS (pedidos agrupados por X) -> Le ponemos un sinónimo: meter el dato en una variable (pedidos).
+                    TotalPedidos = r.Count(), //Calcular cuantos pedidos tiene cada cliente.
+                    //SubConsulta para sacar el nombre del cliente de otra lista:
+                    nombreCliente = DataLists.ListaClientes.Where(s => s.Id == r.Key).Select(s => s.Nombre).FirstOrDefault()
+                })
+                .ToList(); //Retorna un objeto lista (IGrouping) con los pedidos agrupados por Keys + los datos de Select.
+            foreach (var grupo in listGroupP)
+            {
+                Console.WriteLine($"{grupo.nombreCliente} - {grupo.TotalPedidos} pedidos."); //Lo sacamos de los calculos en Select.
+                foreach (var pedido in grupo.pedidos) //Recorrer pedidos (= r).
+                {
+                    Console.WriteLine($" --> {pedido.Id} - {pedido.FechaPedido}");
+                }
+            }
+        }
+
+        static void ejercicios2()
+        {
+            //Lista CLIENTE     -> idClinete     / Nombre      / FechaNac
+            //Lista PRODUCTO    -> idProducto    / Descripción / Precio
+            //Lista PEDIDO      -> idPedido      / idCliente   / FechaPedido
+
+            //Lista LineaPedido -> idLineaPedido / idPedido    / idProducto  / Cantidad
+
+
+            //1. AGRUPAR Lista LineaPedido POR idPedido / CONTAR "productos" DE CADA idPedido / SUMAR cantidad DE CADA "producto" EN CADA idPedido:
+            var lineasPedidos = DataLists.ListaLineasPedido
+                .GroupBy(r => r.IdPedido)
+                .Select(r => new {
+                    productos = r, //Cada objeto de la Lista LineaPedido. Te estas traiendo toda la información.
+                    idPedido = r.Key, //Las claves (idPedido) de cada grupo.
+                    numProductos = r.Count(), //Suma del número de objetos en cada grupo.
+                    cantidad = r.Sum(s => s.Cantidad) //Suma de la propiedad cantidad en cada grupo.
+                }) //Solo podemos acceder a las variables dentro de Select. Recomendable cuando no quieres traerte todos los datos (en este caso si).
+                .ToList(); //Retorna un objeto lista con las líneas agrupadas -> Keys
+
+            foreach (var pedido in lineasPedidos) //Recorremos los pedidos:
+            {
+                Console.WriteLine($"Id Pedido: {pedido.idPedido} - Productos: {pedido.numProductos} -> Cantidades: {pedido.cantidad}");
+                foreach (var prod in pedido.productos) //Recorremos cada línea de pedido, es decir, los productos de cada pedido:
+                {
+                    Console.WriteLine($" -> Id Producto: {prod.IdProducto} - Cantidad: {prod.Cantidad}");
+                }
+            }
+            Console.WriteLine(Environment.NewLine);
+
+            //2. Hacer una subconsulta para sacar de la lista Productos el precio y la descripción:
+                //-> Calcular el precio de cada producto en cada pedido: Cantidad (lista LineaPedido) * precio (lista Productos).
+                //-> Calcular el precio de cada pedido: La suma de Cantidades (var LineasPedidos) * precio (lista Productos).
+
+            //Importe de cada pedido: (el precio está en Producto) -> Pintar el precio y la descripción.
+            var lineasPedidos2 = DataLists.ListaLineasPedido
+                .GroupBy(r => r.IdPedido)
+                .Select(r => new {
+                    r.Key, //Clave del pedido (IdPedido)
+                    totalPedido = r.Sum( x => //La suma para calcular el precio total de cada pedido.
+                        x.Cantidad * DataLists.ListaProductos //Multiplicamos el precio por la cantidad (subconsulta).
+                            .Where(s => s.Id == x.IdProducto) //Igualamos el Id de producto con el idProducto de la línea de pedidos.
+                            .Select(p => p.Precio) //Seleccionamos el precio.
+                            .FirstOrDefault()) // Cogemos un solo dato.
+                })
+                .ToList();
+            foreach (var pedido in lineasPedidos2)
+            {
+                //Console.WriteLine($"Consulta: {pedido}");
+                Console.WriteLine($"Clave (IdPedido): {pedido.Key} - Total: {pedido.totalPedido}");
             }
         }
     }

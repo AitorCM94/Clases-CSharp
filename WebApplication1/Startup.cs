@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Microsoft.EntityFrameworkCore;
+using Data.Models;
+
 namespace WebApplication1
 {
     public class Startup
@@ -24,6 +27,8 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDbContext<ModelNorthwind> //Para instanciar el objeto contexto una unica vez.
+                (options => options.UseSqlServer(Configuration.GetConnectionString("Northwind"))); //(cadena de conexion DB).
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
