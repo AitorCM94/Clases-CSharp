@@ -1,4 +1,5 @@
-﻿@model Customers
+﻿@*Tipo del dato que recibe:*@
+@model Customers
 
 <div class="card">
     <div class="card-header">
@@ -6,7 +7,9 @@
     </div>
 
     <div class="card-body">
-        <form method="post" asp-controller="Clientes" asp-action="Grabar">
+        @*FORMULARIO*@
+        <form method="post" asp-controller="Clientes" asp-action="Grabar"> @*Modificación para el botón: método (modo post o get), controlador a enviar y la acción*@
+            @*Etiquetas para cada uno de los campos del formulario*@
             <div class="form-group row">
                 <label class="col-2">Identificador</label>
                 <div class="col-10">
@@ -62,7 +65,7 @@
                     <input class="form-control" asp-for="Country" />
                 </div>
             </div>
-
+            @*Sin cambiar el nombre original del campo:*@
             <div class="form-group row">
                 <label class="col-2" asp-for="Region"></label>
                 <div class="col-10">
@@ -84,6 +87,7 @@
                 </div>
             </div>
 
+            @*AÑADIMOS LOS BOTONES*@
             <br />
             <div class="row">
                 <div class="col-6 text-left">

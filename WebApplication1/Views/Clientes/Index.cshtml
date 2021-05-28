@@ -1,12 +1,17 @@
-﻿@using Data.Models
+﻿@using Data.Models @*Añadir el Using: Si lo añadimos en el View import vale para todas las páginas.*@
+
+@*Especificamos el tipo del modelo de dato que pasamos*@
 @model List<Customers>
 
+@*Recorremos y pintamos la colección:*@
 <br />
+@*Creamos una tabla para pintar el contenido. Las clases (estilos) le dan un aspecto visual*@
 <table class="table table-striped">
+    @*Cabecera*@
     <thead>
-        <tr>
-            <td><b>Identificador</b></td>
-            <td><b>Empresa</b></td>
+        <tr> @*Tr es la fila*@
+            <td><b>Identificador</b></td> @*Td cada una de las columnas*@
+            <td><b>Empresa</b></td> @*El b es negrita*@
             <td><b>Contacto</b></td>
             <td><b>Dirección</b></td>
             <td><b>Teléfono</b></td>
@@ -14,10 +19,14 @@
             <td><b>Acciones</b></td>
         </tr>
     </thead>
+    @*Cuerpo*@
     <tbody>
+        @*Los datos que pasamos como modelo están en una variable que se llama Model*@
         @foreach (var c in Model)
         {
+            @*Pintar una fila por cada registro que haya*@
             <tr>
+                @*a -> Hipervínculo, href para especificar donde queremos ir: controlador/vista/id*@
                 <td><a href="/clientes/ficha/@c.CustomerID">@c.CustomerID</a></td>
                 <td>@c.CompanyName</td>
                 <td>@c.ContactName <br /> <small>(@c.ContactTitle)</small></td>
