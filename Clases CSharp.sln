@@ -35,11 +35,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplicationAPI", "Formac
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 Herencia", "06 Herencia", "{E7C3DEBD-FE6B-41C2-B545-7E982EAEDEFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formacion.CSharp.ConsoleAppHerencia", "Formacion.CSharp.ConsoleAppHerencia\Formacion.CSharp.ConsoleAppHerencia.csproj", "{9364477D-4A9C-44F0-8377-D34E40185835}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Formacion.CSharp.ConsoleAppHerencia", "Formacion.CSharp.ConsoleAppHerencia\Formacion.CSharp.ConsoleAppHerencia.csproj", "{9364477D-4A9C-44F0-8377-D34E40185835}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07 Tasks", "07 Tasks", "{0912C7B0-3EF7-4440-9215-B0C3F8E100BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formacion.CSharp.ConsoleAppTareas", "Formacion.CSharp.ConsoleAppTareas\Formacion.CSharp.ConsoleAppTareas.csproj", "{CF02EF0B-C46E-485A-8642-951161D456FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Formacion.CSharp.ConsoleAppTareas", "Formacion.CSharp.ConsoleAppTareas\Formacion.CSharp.ConsoleAppTareas.csproj", "{CF02EF0B-C46E-485A-8642-951161D456FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formacion.CSharp.ConsoleAppTareas2", "Formacion.CSharp.ConsoleAppTareas2\Formacion.CSharp.ConsoleAppTareas2.csproj", "{1F36B0F5-4CD1-47C3-BB46-B8679B401D4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +93,10 @@ Global
 		{CF02EF0B-C46E-485A-8642-951161D456FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF02EF0B-C46E-485A-8642-951161D456FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF02EF0B-C46E-485A-8642-951161D456FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F36B0F5-4CD1-47C3-BB46-B8679B401D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F36B0F5-4CD1-47C3-BB46-B8679B401D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F36B0F5-4CD1-47C3-BB46-B8679B401D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F36B0F5-4CD1-47C3-BB46-B8679B401D4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +113,7 @@ Global
 		{CC4A4884-A795-4EF4-AE86-587BF5442972} = {8372D30E-8230-4DC4-AEAA-7BE0E2FA7C5F}
 		{9364477D-4A9C-44F0-8377-D34E40185835} = {E7C3DEBD-FE6B-41C2-B545-7E982EAEDEFB}
 		{CF02EF0B-C46E-485A-8642-951161D456FA} = {0912C7B0-3EF7-4440-9215-B0C3F8E100BE}
+		{1F36B0F5-4CD1-47C3-BB46-B8679B401D4A} = {0912C7B0-3EF7-4440-9215-B0C3F8E100BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BC99A3DB-9A3C-40C6-A520-EEF18B129C91}

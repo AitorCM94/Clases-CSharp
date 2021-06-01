@@ -16,8 +16,10 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
     class Program
     {
         //Variables globales -> públicas, estáticas y de solo lectura:
-        static readonly HttpClient http = new HttpClient(); //2. Instanciar una única vez para toda la aplicación.
-        static readonly string url = "http://api.labs.com.es/v1.0/"; //1. URL básica para la conexión con el Microservicio.
+        //2. Instanciar una única vez para toda la aplicación.
+        static readonly HttpClient http = new HttpClient();
+        //1. URL básica para la conexión con el Microservicio.
+        static readonly string url = "http://api.labs.com.es/v1.0/"; //URL NO DISPONIBLE.
 
         static void Main(string[] args)
         {
@@ -87,9 +89,9 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
             }
         }
 
-        static void HttpClientWithHeaders() //MENSAJE DE PETICIÓN (+ contenido)
+        static void HttpClientWithHeaders() //MENSAJE DE PETICIÓN (añadir contenido)
         {
-            //1. Instanciamos el objeto Request -> Mensaje de peticion:
+            //1. CONFECCIONAR UN MENSAJE DE PETICIÓN -> Instanciamos el objeto Request:
             var request = new HttpRequestMessage(HttpMethod.Get, "http://api.labs.com.es/v1.0/clientes.ashx?all"); //Colección con cabeceras. (Epecificamos el método y la url)
 
             //2. Borrar cabeceras por defecto (opcional):
@@ -101,10 +103,10 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
             request.Headers.Add("User-Agent", "ConsoleApp for Northwind");
             request.Headers.Add("Authorization", "Key of access");
 
-            //5. Con el método Send hago el envío del (mensaje):
+            //4. ENVIO DEL MENSAJE DE PETICIÓN Con el método Send:
             var response = http.SendAsync(request).Result; //Respuesta.
 
-            //6. Leemos el contenido igual que antes:
+            //5. Leemos el contenido igual que antes:
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var content = response.Content.ReadAsStringAsync().Result;
@@ -121,7 +123,7 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
 
         static void HttpClientWithHeaders2() //SIN MENSAJE DE PETICIÓN
         {
-            //INCORPORAR CABECERAS CON EL OBJETO HTTPCLIENT -> SIN CONTENIDO:
+            //INCORPORAR CABECERAS CON EL MÉTODO HTTPCLIENT GET:
             http.BaseAddress = new Uri(url);
 
             //Uso de la propiedad DefaultRequestHeaders:
@@ -130,6 +132,7 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
             http.DefaultRequestHeaders.Add("User-Agent", "ConsoleApp for Northwind");
             http.DefaultRequestHeaders.Add("Authorization", "Key of access");
 
+            //Llamada:
             var response = http.GetAsync("clientes.ashx?all").Result;
 
             if (response.IsSuccessStatusCode && response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -199,9 +202,9 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
                 //GITHUB BORJA
             }
             else Console.WriteLine("Error: {0}", response.StatusCode.ToString());
-        }
+        } //API De direcciones IP.
 
-        static void Ejercicio2()
+        static void Ejercicio2() //https://localhost:44376/api/v1.0/empleados.ashx?id=4 Ejecutar con MicroservicioNorthwind
         {
             http.BaseAddress = new Uri("https://localhost:44376/api/v1.0/");
 
@@ -232,23 +235,27 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
             else Console.WriteLine("Error: {0}", response.StatusCode.ToString());
         }
 
-        static void Ejercicio3GET()
+        static void Ejercicio3GET() //https://localhost:44396/api/products Ejecutar con WebApplicationAPI
         {
             //Preguntar por el identificador de un producto y si pone all mostrar el listado.
+
             http.BaseAddress = new Uri("https://localhost:44396/api/"); //products/id
+
             Console.Clear();
             Console.Write("ID Producto: ");
             string id = Console.ReadLine();
 
             if (id == "all")
             {
-                var response = http.GetAsync("products").Result;
+                //HACER LA LLAMADA:
+                var response = http.GetAsync("products").Result; //Mensaje de petición implícito con el método get. 
 
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                //LEER LA RESPUESTA:
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //Mirar siempre que status code retorna el microservicio.
                 {
-                    var contenttype = response.Content.Headers.ContentType.MediaType;
+                    var contenttype = response.Content.Headers.ContentType.MediaType; //Para saber el formato de los datos que retorna.
 
-                    var content = response.Content.ReadAsStringAsync().Result;
+                    var content = response.Content.ReadAsStringAsync().Result; //Pasar de formato en bytes a texto.
                     //Console.WriteLine("Respuesta JSON: {0}", content);
 
                     if (contenttype == "text/plain")
@@ -257,8 +264,9 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
                     }
                     else if (contenttype == "application/json")
                     {
-                        var respuesta = JsonConvert.DeserializeObject<List<Products>>(content);
-
+                        //Deserializar:
+                        var respuesta = JsonConvert.DeserializeObject<List<Products>>(content); //Mirar siempre que tipo de dato retorna.
+                        //Leer:
                         foreach (var item in respuesta)
                         {
                             Console.WriteLine($"{item.ProductName}");
@@ -284,29 +292,28 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
                     }
                     else if (contenttype == "application/json")
                     {
-                        var respuesta = JsonConvert.DeserializeObject<Products>(content);
+                        var respuesta = JsonConvert.DeserializeObject<Products>(content); //Retorna un solo producto.
 
                         Console.WriteLine($"{respuesta.ProductName}");
                     }
                 }
                 else Console.WriteLine("Error: {0}", response.StatusCode.ToString());
 
-                //GITHUB BORJA
+                //GITHUB BORJA -> Switch : case / default
             }
         }
 
         static void Ejercicio3POST()
         {
-            //Añadir un producto:
-
-            HttpResponseMessage response;
             http.BaseAddress = new Uri("https://localhost:44396/api/"); //products/id
 
+            //1. CREAMOS EL OBJETO QUE QUEREMOS AÑADIR:
             Products producto = new Products();
-            //producto.ProductName = "Sillas";
-            //producto.UnitPrice = 10;
-            //producto.UnitsInStock = 1000;
-            //Preguntando:
+            //1.1 Fijos:
+            producto.ProductName = "Sillas";
+            producto.UnitPrice = 10;
+            producto.UnitsInStock = 99;
+            //1.2. Preguntando:
             Console.Clear();
             Console.Write("Nombre: ");
             string nombre = Console.ReadLine();
@@ -318,47 +325,50 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
             string unidades = Console.ReadLine();
             producto.UnitsInStock = Convert.ToSByte(unidades);
 
-            var productJSON = JsonConvert.SerializeObject(producto);
-            //Console.WriteLine($"Región en JSON: {productJSON}");
 
-            //4. Objeto Http de tipo content -> Instanciamos el método StringContent: (contenido en formato texto)
-            var content = new StringContent(productJSON, System.Text.Encoding.UTF8, "application/json"); //(datos, encoding, contentType)
+            //2. Transformar el contenido a un objeto http con el método StringContent (+ serialización a JSON del objeto):
+            var content = new StringContent(JsonConvert.SerializeObject(producto), System.Text.Encoding.UTF8, "application/json"); //(datos, encoding, contentType)
 
-            //5. Llamada con el método Post (url, contenido)
-            response = http.PostAsync("products", content).Result;
+            //4. Llamada con el método Post (url, contenido)
+            //HttpResponseMessage response;
+            var response = http.PostAsync("products", content).Result;
 
             //6. Preguntamos:
             if (response.StatusCode == System.Net.HttpStatusCode.Created)
             {
-                //7. Pintamos el contenido de la respuesta:
+                //7. Pintamos el contenido de la respuesta :
                 var responseContent = response.Content.ReadAsStringAsync().Result;
-                Console.WriteLine($"Respuesta: {responseContent}");
+                //var data = JsonConvert.DeserializeObject<Products>(responseContent); //Deserializar si queremos tratarlo como un objeto.
+                Console.WriteLine($"Objeto añadido correctamente: {responseContent}");
             }
             else Console.WriteLine("Error: {0}", response.StatusCode.ToString());
-        }
+        } //Añadir producto.
 
         static void Ejercicio3PUT()
         {
-            //Coger un objeto y actualizarlo.
-            //HttpResponseMessage response;
             http.BaseAddress = new Uri("https://localhost:44396/api/"); //products/id
 
+            //1. Preguntar por el ID del producto que queremos modificar:
             Console.Clear();
             Console.Write("ID Producto: ");
             string id = Console.ReadLine();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"products/{id}");
+            //2. Hacer la llamada para obtener el producto:
+            //2.1 Con el método Get:
+            //HttpResponseMessage response;
+            var response = http.GetAsync($"products/{id}").Result;
+            //2.2 Con el método Send (mensaje de petición):
+            //var request = new HttpRequestMessage(HttpMethod.Get, $"products/{id}");
+            //var response = http.SendAsync(request).Result;
 
-            var response = http.SendAsync(request).Result;
-
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) //Analizamos el status code de la respuesta.
             {
-                var content = response.Content.ReadAsStringAsync().Result;
+                //3. Transformamos el contenido del mensaje para leerlo:
+                var content = response.Content.ReadAsStringAsync().Result; //Pasamos el contenido de bytes a texto.
                 //Console.WriteLine($"Respuesta: {content}");
+                var producto = JsonConvert.DeserializeObject<Products>(content); //Pasamos de texto a objeto.
 
-                var producto = JsonConvert.DeserializeObject<Products>(content);
-
+                //4. Modificamos los datos del objeto:
                 Console.Write("Nombre: ");
                 string nombre = Console.ReadLine();
                 producto.ProductName = nombre;
@@ -369,13 +379,15 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
                 string unidades = Console.ReadLine();
                 producto.UnitsInStock = Convert.ToSByte(unidades);
 
+                //5. Pasamos el objeto a JSON y a objeto http para enviar:
                 var productJSON = JsonConvert.SerializeObject(producto);
-                Console.WriteLine($"Región en JSON: {productJSON}");
+                //Console.WriteLine($"Producto en JSON: {productJSON}");
+                var contenMod = new StringContent(productJSON, System.Text.Encoding.UTF8, "application/json");
 
-                var content2 = new StringContent(productJSON, System.Text.Encoding.UTF8, "application/json");
+                //6. Llamada con el método put para introducir las modificaciones:
+                response = http.PutAsync($"products/{id}", contenMod).Result; //Comprueba que el id del producto sea el mismo.
 
-                response = http.PutAsync($"https://localhost:44396/api/products/{id}", content2).Result;
-
+                //7. Mostrar respuesta según status code.
                 if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
                     Console.WriteLine($"Producto modificado correctamente.");
@@ -384,27 +396,35 @@ namespace Formacion.CSharp.ConsoleAppAPIClient
 
             }
             else Console.WriteLine("Error: {0}", response.StatusCode.ToString());
-        }
+        } //Modificar producto.
 
         static void Ejercicio3DELETE()
         {
             //Preguntar por un id y borrar (uno que creemos).
-            //Coger un objeto y actualizarlo.
-            //HttpResponseMessage response;
-            http.BaseAddress = new Uri("https://localhost:44396/api/"); //products/id
 
+            http.BaseAddress = new Uri("https://localhost:44396/api/"); //products/id
+            //1. Preguntamos por el id:
             Console.Clear();
             Console.Write("ID Producto: ");
             string id = Console.ReadLine();
+            //2. Cogemos el producto para preguntar:
+            var producto = http.GetFromJsonAsync<Products>($"products/{id}").Result;
 
-            Console.Write("Borrar: ");
-            string sino = Console.ReadLine();
+            Console.Write($"Borrar {producto.ProductName}: ");
+            string sino = Console.ReadLine().ToLower();
 
             if (sino == "si")
             {
-                var response = http.DeleteAsync($"products/{id}").Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                Console.WriteLine(content);
+                //3. LLAMADA DELETE CON EL ID DEL PRODUCTO A BORRAR:
+                //HttpResponseMessage response;
+                var response = http.DeleteAsync($"products/{id}").Result; //Retorna un content status y el objeto eliminado en el body.
+                
+                if (response.StatusCode == System.Net.HttpStatusCode.OK) //Comprobamos el status code
+                {
+                    var content = response.Content.ReadAsStringAsync().Result; //Pintamos el contenido (objeto eliminado)
+                    Console.WriteLine(content);
+                }
+                else Console.WriteLine("Error: {0}", response.StatusCode.ToString());
             }
             else
             {
